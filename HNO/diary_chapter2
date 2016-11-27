@@ -1,0 +1,353 @@
+  pause
+
+% CHOOSING AN IMAGE
+  pause
+
+% The first thing we need is an image.
+% Access to the Image Processing Toolbox (IPT) provides several images we
+% can use; see
+%   >> help imdemos/Contents
+% for a full list.  
+% In addition, several images can also be downloaded from the book's website.
+% For these examples, we use the images pumpkins.tif and butterflies.tif 
+% from the website.
+
+  pause
+
+% The command "imfinfo" displays information about the image
+% stored in a data file.  For example,
+
+  info = imfinfo('butterflies.tif')
+
+info = 
+
+                     Filename: 'C:\Users\gatesyp\GitHub\image-deblurring\Challenges\butterflies.tif'
+                  FileModDate: '27-Nov-2016 20:22:05'
+                     FileSize: 1212228
+                       Format: 'tif'
+                FormatVersion: []
+                        Width: 852
+                       Height: 474
+                     BitDepth: 24
+                    ColorType: 'truecolor'
+              FormatSignature: [73 73 42 0]
+                    ByteOrder: 'little-endian'
+               NewSubFileType: 0
+                BitsPerSample: [8 8 8]
+                  Compression: 'Uncompressed'
+    PhotometricInterpretation: 'RGB'
+                 StripOffsets: [1x60 double]
+              SamplesPerPixel: 3
+                 RowsPerStrip: 8
+              StripByteCounts: [1x60 double]
+                  XResolution: 72
+                  YResolution: 72
+               ResolutionUnit: 'Inch'
+                     Colormap: []
+          PlanarConfiguration: 'Chunky'
+                    TileWidth: []
+                   TileLength: []
+                  TileOffsets: []
+               TileByteCounts: []
+                  Orientation: 1
+                    FillOrder: 1
+             GrayResponseUnit: 0.0100
+               MaxSampleValue: [255 255 255]
+               MinSampleValue: [0 0 0]
+                 Thresholding: 1
+                       Offset: 1212054
+
+
+% shows that the image contained in the file butterflies.tif is
+% an RGB image.  
+
+  pause
+
+% Doing the same thing for pumpkins.tif, we see that this image
+% is a grayscale intensity image.
+
+  infop = imfinfo('pumpkins.tif')
+
+infop = 
+
+                     Filename: 'C:\Users\gatesyp\GitHub\image-deblurring\Challenges\pumpkins.tif'
+                  FileModDate: '27-Nov-2016 20:22:06'
+                     FileSize: 261232
+                       Format: 'tif'
+                FormatVersion: []
+                        Width: 512
+                       Height: 512
+                     BitDepth: 8
+                    ColorType: 'grayscale'
+              FormatSignature: [73 73 42 0]
+                    ByteOrder: 'little-endian'
+               NewSubFileType: 0
+                BitsPerSample: 8
+                  Compression: 'PackBits'
+    PhotometricInterpretation: 'BlackIsZero'
+                 StripOffsets: [1x32 double]
+              SamplesPerPixel: 1
+                 RowsPerStrip: 16
+              StripByteCounts: [1x32 double]
+                  XResolution: 72
+                  YResolution: 72
+               ResolutionUnit: 'Inch'
+                     Colormap: []
+          PlanarConfiguration: 'Chunky'
+                    TileWidth: []
+                   TileLength: []
+                  TileOffsets: []
+               TileByteCounts: []
+                  Orientation: 1
+                    FillOrder: 1
+             GrayResponseUnit: 0.0100
+               MaxSampleValue: 255
+               MinSampleValue: 0
+                 Thresholding: 1
+                       Offset: 260786
+
+  pause
+
+% READING AN IMAGE
+  pause
+
+% The command to read images in MATLAB is "imread".  
+% You can find out the many ways to use this function using "help" or
+% "doc"; here are two simple examples:
+
+  G = imread('pumpkins.tif');
+  F = imread('butterflies.tif');
+
+  pause
+
+% Now use the "whos" command to see what variables you have in your
+% workspace.  
+
+  whos
+  Name           Size                 Bytes  Class     Attributes
+
+  Ac           260x260               540800  double              
+  Ar           300x300               720000  double              
+  B            260x300               624000  double              
+  D              1x1                      8  double    global    
+  F            474x852x3            1211544  uint8               
+  G            512x512               262144  uint8               
+  P            260x300               624000  double              
+  T             85x1                    680  double              
+  Y             85x2                   1360  double              
+  d1             1x1                      8  double    global    
+  d2             1x1                      8  double    global    
+  eps            1x1                      8  double    global    
+  info           1x1                   6986  struct              
+  infop          1x1                   6492  struct              
+  init           1x2                     16  double              
+  m              1x1                      8  double    global    
+  options        1x1                   3888  struct              
+  sigma          1x1                      8  double    global    
+  t              1x2                     16  double              
+  x              1x1                      8  double    global    
+
+  pause
+
+% Notice that both F and G are arrays whose entries are "uint8" values.  
+% This means the intensity values are integers in the range [0,255].
+
+% F is a three dimensional array since it contains RGB information, 
+% and G is a two dimensional array since it only represents the 
+% gray scale intensity values for each pixel.
+
+  pause
+
+% There are three basic commands for displaying images: "imshow",
+% "image" and "imagesc".  
+% In general, "imshow" is preferred, since it renders images more 
+% accurately, especially in terms of size and color.  However, "imshow"
+% can only be used if the IPT is available.   If this is not the case,
+% then the commands "image" and "imagesc" can be used.
+% We'll try each of these commands.
+
+  figure(1), imshow(G), title('imshow(G)')
+  pause
+
+  figure(2), image(G), title('image(G)')
+  pause
+
+  figure(3), image(G), colormap(gray), title('image(G), colormap(gray)')
+  pause
+
+  figure(4), imagesc(G), title('imagesc(G)')
+  pause
+
+  figure(5), imagesc(G), colormap(gray), title('imagesc(G), colormap(gray)')
+  pause
+
+  figure(6), imshow(F), title('imshow(F)')
+  pause
+
+  figure(7), image(F), title('image(F)')
+  pause
+
+  figure(8), image(F), colormap(gray), title('image(F), colormap(gray)')
+  pause
+
+  figure(9), imagesc(F), title('imagesc(F)')
+  pause
+
+  figure(10), imagesc(F), colormap(gray), title('imagesc(F), colormap(gray)')
+  pause
+
+
+% In this example, notice that an unexpected rendering may occur.  
+% This is especially true for gray scale intensity images, where 
+% "image" and "imagesc" display images using a false colormap, 
+% unless we explicitly specify gray using the "colormap" command.
+
+  pause
+
+% In addition, "image" does not always provide a proper scaling of 
+% the pixel values.  Thus, if the IPT is not available, we suggest
+% using the "imagesc" command.  
+% In addition, because "imagesc" does not always properly set the axes, 
+% we suggest following this display command with the statement "axis image".
+
+  pause
+
+% WRITING AN IMAGE
+  pause
+
+% To write an image to a file using any of the supported formats
+% we can use the "imwrite" command.
+
+% There are many ways to use this function, and you should
+% see the on-line help for more information.  
+
+% Here we only describe two basic approaches, which will work for 
+% converting images from one data format to another; 
+% for example, from TIFF to JPEG.
+
+  pause
+
+% This can be done simply by using "imread" to read an image
+% of one format, and "imwrite" to write it to a file
+% of another format.  For example:
+
+  I = imread('pumpkins.tif');
+  imwrite(I, 'pumpkins.jpg');
+
+  pause
+
+% Image data may also be saved in a MAT-file using the "save" command.
+% In this case, if we want to use the saved image in a subsequent 
+% MATLAB session, we simply use the "load" command to load the
+% data into the workspace.
+
+  save mysavefile I
+  pause
+
+% PERFORMING ARITHMETIC ON IMAGES
+  pause
+
+% We've learned the very basics of reading and writing, so now it's time 
+% to learn some basics of arithmetic.  One important thing we
+% must keep in mind is that most image processing software
+% (this includes MATLAB) expects the pixel values to be in a fixed interval.
+% Recall that typical grayscales for intensity images can have 
+%   - integer values from [0, 255] or [0, 65535], 
+%   - or floating point values in the interval [0, 1].
+% If, after performing some arithmetic operations, the pixel values fall
+% outside these intervals, unexpected results can occur.
+
+  pause
+
+% Moreover, since our goal is to operate on images with mathematical
+% methods, integer representation of images can be limiting.  
+
+% For example, if we multiply an image by a noninteger scalar, then the
+% result contains entries which are non-integers.  
+
+% Of course, we can easily convert these to integers by, say, rounding.  
+% If we are only doing one arithmetic operation, then this approach may be
+% appropriate;  the IPT provides basic image operations such as scaling.
+
+  pause
+
+% Let's experiment with arithmetic on images.
+
+% First read an image:
+
+  G = imread('pumpkins.tif');
+  pause
+
+% For the algorithms discussed later in this book, we need to understand
+% how to algebraically manipulate the images; that is, we want to be able 
+% to add, subtract, multiply and divide images.
+
+% Unfortunately, standard MATLAB commands such as +, -, *, /, do not
+% always work for images.  
+
+% For example, in older versions of MATLAB (e.g., version 6.x), 
+% if we attempt the simplecommand:
+% 
+% >>  G + 10
+ 
+% then we get an error message.
+ 
+%     G + 10 
+%     ??? Error using ==> +
+%     Function '+' is not defined for values of class 'uint8'.
+
+  pause
+
+% The + operator does not work for uint8 variables!  Unfortunately,
+% most images stored as TIFF, JEPG, etc., are either uint8 or uint16,
+% and standard arithmetic operations may not work on these types of variables.
+
+% To get around this problem, the IPT has functions such as "imadd",
+% "imsubtract", "immultiply", "imdivide" that can be used specifically
+% for image operations.  
+
+  pause
+
+% However, we will not use these operations.
+
+% Our algorithms require many arithmetic operations, and rounding, chopping
+% and rescaling after each one of these can lead to significant
+% loss of information.  
+
+% Therefore, we adopt the convention of 
+%   - converting the initial image to double-precision, 
+%   - operating upon it,
+%   - and then converting back to the appropriate format when
+%     we are ready to display or write an image to a data file.
+
+  pause
+
+% In working with grayscale intensity images, the main conversion function 
+% we need is "double".  It is easy to use:
+
+  Gd = double(G);
+  pause
+
+% Use the "whos" command to see what variables are contained in the workspace.
+
+  whos
+  Name           Size                 Bytes  Class     Attributes
+
+  Ac           260x260               540800  double              
+  Ar           300x300               720000  double              
+  B            260x300               624000  double              
+  D              1x1                      8  double    global    
+  F            474x852x3            1211544  uint8               
+  G            512x512               262144  uint8               
+  Gd           512x512              2097152  double              
+  I            512x512               262144  uint8               
+  P            260x300               624000  double              
+  T             85x1                    680  double              
+  Y             85x2                   1360  double              
+  d1             1x1                      8  double    global    
+  d2             1x1                      8  double    global    
+  eps            1x1                      8  double    global    
+  info           1x1                   6986  struct              
+  infop          1x1                   6492  struct              
+  init           1x2                     16  double              
+  m              1x1                      8  doub
